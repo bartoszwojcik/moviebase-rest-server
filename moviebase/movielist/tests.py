@@ -1,10 +1,7 @@
 from random import randint, sample
-
 from faker import Faker
-from rest_framework.test import APITestCase, APIRequestFactory
-
+from rest_framework.test import APITestCase
 from movielist.models import Movie, Person
-from movielist.serializers import MovieSerializer
 
 
 class MovieTestCase(APITestCase):
@@ -42,7 +39,6 @@ class MovieTestCase(APITestCase):
         actors = sample(list(people), randint(1, len(people)))
         actor_names = [a.name for a in actors]
         movie_data["actors"] = actor_names
-        print(movie_data["title"])
         return movie_data
 
     def _create_fake_movie(self):
@@ -75,27 +71,28 @@ class MovieTestCase(APITestCase):
         self.assertEqual(Movie.objects.count(), len(response.data))
 
     def test_get_movie_detail(self):
-        response = self.client.get("/movies/1/", {}, format='json')
+        response = self.client.get(f"""/movies/{Movie.objects.first().id}/""", {}, format='json')
         self.assertEqual(response.status_code, 200)
         for field in ["title", "year", "description", "director", "actors"]:
             self.assertIn(field, response.data)
 
-    def test_delete_movie(self):
-        response = self.client.delete("/movies/1/", {}, format='json')
-        self.assertEqual(response.status_code, 204)
-        movie_ids = [movie.id for movie in Movie.objects.all()]
-        self.assertNotIn(1, movie_ids)
-
     def test_update_movie(self):
-        response = self.client.get("/movies/1/", {}, format='json')
+        response = self.client.get(f"""/movies/{Movie.objects.first().id}/""", {}, format='json')
         movie_data = response.data
         new_year = 3
         movie_data["year"] = new_year
         new_actors = [self._random_person().name]
         movie_data["actors"] = new_actors
-        response = self.client.patch("/movies/1/", movie_data, format='json')
+        response = self.client.patch(f"""/movies/{Movie.objects.first().id}/""", movie_data, format='json')
         self.assertEqual(response.status_code, 200)
-        movie_obj = Movie.objects.get(id=1)
+        movie_obj = Movie.objects.get(id=Movie.objects.first().id)
         self.assertEqual(movie_obj.year, new_year)
         db_actor_names = [actor.name for actor in movie_obj.actors.all()]
         self.assertCountEqual(db_actor_names, new_actors)
+
+    def test_delete_movie(self):
+        id_for_removal = Movie.objects.first().id
+        response = self.client.delete(f"""/movies/{id_for_removal}/""", {}, format='json')
+        self.assertEqual(response.status_code, 204)
+        movie_ids = [movie.id for movie in Movie.objects.all()]
+        self.assertNotIn(id_for_removal, movie_ids)

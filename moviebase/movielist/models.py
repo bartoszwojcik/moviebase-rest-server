@@ -11,7 +11,9 @@ class Person(models.Model):
 class Movie(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    director = models.ForeignKey(Person, related_name="movies_directed", on_delete=models.CASCADE)
+    director = models.ForeignKey(
+        Person, related_name="movies_directed", on_delete=models.CASCADE
+    )
     year = models.SmallIntegerField()
     actors = models.ManyToManyField(Person, related_name="movies_cast")
 

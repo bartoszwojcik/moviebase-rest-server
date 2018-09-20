@@ -16,15 +16,20 @@ Including another URLconf
 from django.conf.urls import url, re_path
 from django.contrib import admin
 from movielist.views import MovieListView, MovieView
-from showtimes.views import CinemaListView, CinemaView
+from showtimes.views import CinemaListView, CinemaView, ScreeningsListView,\
+    ScreeningView
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+
+    # Movies
     url(r'^movies/?$', MovieListView.as_view(), name="movies"),
     url(
         r'^movies/(?P<pk>[0-9]+)/?$', MovieView.as_view(), name="movie-detail"
     ),
+
+    # Cinemas
     re_path(
         r'^cinemas/?$', CinemaListView.as_view(), name="cinemas"
     ),
@@ -34,4 +39,13 @@ urlpatterns = [
         name="cinema-detail"
     ),
 
+    # Screenings
+    re_path(
+        r'^screenings/?$', ScreeningsListView.as_view(), name="screenings"
+    ),
+    re_path(
+        r'^screenings/(?P<pk>[0-9]+)/?$',
+        ScreeningView.as_view(),
+        name="screening-detail"
+    ),
 ]

@@ -16,6 +16,7 @@ class CinemaView(generics.RetrieveUpdateDestroyAPIView):
 class ScreeningsListView(generics.ListCreateAPIView):
     queryset = Screening.objects.all()
     serializer_class = ScreeningSerializer
+    search_fields = ('movie__title', 'cinema__city')
 
 
 class ScreeningView(generics.RetrieveUpdateDestroyAPIView):

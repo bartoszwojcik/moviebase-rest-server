@@ -19,6 +19,3 @@ class Screening(models.Model):
         Movie, on_delete=models.CASCADE, related_name="movies"
     )
     date = models.DateTimeField()
-
-    def __str__(self):
-        return str((self.cinema, self.movie, self, self.date))

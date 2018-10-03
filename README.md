@@ -1,5 +1,6 @@
 # 'MovieBase', Django REST server
-A half-day bootcamp project. REST server providing data on movies and cinemas from SQL database. Built using Python and Django.
+Sample REST server providing data on movies and cinemas from SQL database. Built using Python, Django and Django-REST-Framework.
+
 
 # Main features
 * Browsable API
@@ -7,7 +8,12 @@ A half-day bootcamp project. REST server providing data on movies and cinemas fr
 * Serializers
 * API test cases for cinemas, movies, screenings - lists, adding, updates, removal
 * Serializer filtering for cinemas: displaying only screenings within the next 30 days
-* Search for screenings using related movies' names and cinemas' cities
+* Search filter for screenings using related movies' names and cinemas' cities
+* List pagination
+* CORS support
+* API root and schema
+* Support for requesting .json files directly through URL
+* Support for authentication via JWT access tokens, including user serializers
 
 
 # Sample screenshots
@@ -27,6 +33,18 @@ Search results
 Single screening
 
 ![Single screening](screenshots/single-screening.png)
+
+
+API Root when not logged in
+
+![API-root](screenshots/api-root-no-credentials.png)
+
+
+**Sample response to token request**
+
+curl -X POST -d "username=bartvessh&password=test123" http://localhost:8000/api-token-auth/
+
+{"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6ImJhcnR2ZXNzaCIsImV4cCI6MTUzODU1ODQ0NSwiZW1haWwiOiIifQ.2Q9P-sJRCkhjn6VqPQ0IJ701QX4StS7zRZ5grjQusEc","user":{"id":2,"username":"bartvessh","is_staff":true}}
 
 # Author
 Bartosz Wójcik

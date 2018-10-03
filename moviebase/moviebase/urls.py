@@ -15,17 +15,41 @@ Including another URLconf
 """
 from django.conf.urls import url, re_path
 from django.contrib import admin
-from movielist.views import MovieListView, MovieView
-from showtimes.views import CinemaListView, CinemaView, ScreeningsListView,\
-    ScreeningView
+from django.urls import include
 
+from rest_framework.urlpatterns import format_suffix_patterns
+from rest_framework.schemas import get_schema_view
+from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, \
+    verify_jwt_token
+
+from movielist.views import MovieListView, MovieView
+from showtimes.views import CinemaListView, CinemaView, ScreeningsListView, \
+    ScreeningView, api_root, UserListView, UserDetailView, current_user
+
+schema_view = get_schema_view(title="MovieBase API")
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    # Main views
+    re_path(r'^admin/', admin.site.urls),
+    re_path(r"^$", api_root),
+    re_path(r"schema/?$", schema_view),
+
+    # User views
+    re_path(
+        r'^users/?$',
+        UserListView.as_view(),
+        name="users"
+    ),
+    re_path(
+        r'^users/(?P<pk>[0-9]+)/?$',
+        UserDetailView.as_view(),
+        name="user-detail"
+    ),
+    re_path(r"^current_user/?$", current_user),
 
     # Movies
-    url(r'^movies/?$', MovieListView.as_view(), name="movies"),
-    url(
+    re_path(r'^movies/?$', MovieListView.as_view(), name="movies"),
+    re_path(
         r'^movies/(?P<pk>[0-9]+)/?$', MovieView.as_view(), name="movie-detail"
     ),
 
@@ -48,4 +72,20 @@ urlpatterns = [
         ScreeningView.as_view(),
         name="screening-detail"
     ),
+]
+
+
+# Allow .json etc. file formats directly in URLs
+urlpatterns = format_suffix_patterns(urlpatterns)
+
+# For providing login to browsable API
+urlpatterns += [
+    re_path(r'^api-auth/', include('rest_framework.urls')),
+]
+
+# # JWT Token
+urlpatterns += [
+    re_path(r'^api-token-auth/', obtain_jwt_token),
+    re_path(r'^api-token-refresh/', refresh_jwt_token),
+    re_path(r'^api-token-verify/', verify_jwt_token),
 ]

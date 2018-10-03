@@ -42,11 +42,13 @@ INSTALLED_APPS = [
     'django_filters',
     'movielist',
     'showtimes',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -131,8 +133,30 @@ APPEND_SLASH = False
 # Filter backend
 
 REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
         'rest_framework.filters.SearchFilter',
-    )
+    ),
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20
+}
+
+
+# CORS headers configuration
+CORS_ORIGIN_ALLOW_ALL = True
+
+
+# Custom response handler for JWT
+JWT_AUTH = {
+    'JWT_RESPONSE_PAYLOAD_HANDLER': 'moviebase.utils.my_jwt_response_handler',
+    'JWT_ALLOW_REFRESH': True,
 }

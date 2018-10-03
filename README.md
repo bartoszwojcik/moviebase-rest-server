@@ -1,6 +1,10 @@
 # 'MovieBase', Django REST server
 Sample REST server providing data on movies and cinemas from SQL database. Built using Python, Django and Django-REST-Framework.
+Requires authentication with JWT tokens or simple l&p access via the browsable api.
 
+Contains basic tests for GET, POST, UPDATE, DELETE.
+
+Requirements in requirements.txt
 
 # Main features
 * Browsable API
@@ -38,7 +42,6 @@ Single screening
 API Root when not logged in
 
 ![API-root](screenshots/api-root-no-credentials.png)
-
 
 **Sample response to token request**
 
